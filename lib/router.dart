@@ -1,9 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'features/cash/add_cash_screen.dart';
 import 'features/clients/add_tx_screen.dart';
 import 'features/clients/client_detail_screen.dart';
 import 'features/clients/client_form_screen.dart';
+import 'features/expenses/add_expense_screen.dart';
 import 'features/home/home_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -36,6 +38,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           clientId: int.parse(state.pathParameters['id']!),
           type: int.parse(state.uri.queryParameters['type'] ?? '0'),
         ),
+      ),
+      GoRoute(
+        path: '/cash/new',
+        builder: (context, state) => const AddCashScreen(),
+      ),
+      GoRoute(
+        path: '/expenses/new',
+        builder: (context, state) => const AddExpenseScreen(),
       ),
     ],
   );

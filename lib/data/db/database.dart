@@ -5,17 +5,21 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import 'daos/cash_dao.dart';
 import 'daos/clients_dao.dart';
+import 'daos/expenses_dao.dart';
 import 'daos/transactions_dao.dart';
 import 'tables/businesses.dart';
+import 'tables/cash_entries.dart';
 import 'tables/clients.dart';
+import 'tables/expense_entries.dart';
 import 'tables/transactions.dart';
 
 part 'database.g.dart';
 
 @DriftDatabase(
-  tables: [Businesses, Clients, Transactions],
-  daos: [ClientsDao, TransactionsDao],
+  tables: [Businesses, Clients, Transactions, CashEntries, ExpenseEntries],
+  daos: [ClientsDao, TransactionsDao, CashDao, ExpensesDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -23,7 +27,18 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) => m.createAll(),
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await m.createTable(cashEntries);
+            await m.createTable(expenseEntries);
+          }
+        },
+      );
 
   /// Ensures a default business row exists; returns its id.
   Future<int> ensureDefaultBusiness() async {
