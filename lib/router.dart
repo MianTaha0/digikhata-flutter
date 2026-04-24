@@ -7,6 +7,10 @@ import 'features/clients/client_detail_screen.dart';
 import 'features/clients/client_form_screen.dart';
 import 'features/expenses/add_expense_screen.dart';
 import 'features/home/home_screen.dart';
+import 'features/invoices/invoice_detail_screen.dart';
+import 'features/invoices/invoice_form_screen.dart';
+import 'features/stock/product_detail_screen.dart';
+import 'features/stock/product_form_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -46,6 +50,32 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/expenses/new',
         builder: (context, state) => const AddExpenseScreen(),
+      ),
+      GoRoute(
+        path: '/products/new',
+        builder: (context, state) => const ProductFormScreen(),
+      ),
+      GoRoute(
+        path: '/products/:id',
+        builder: (context, state) => ProductDetailScreen(
+          productId: int.parse(state.pathParameters['id']!),
+        ),
+      ),
+      GoRoute(
+        path: '/products/:id/edit',
+        builder: (context, state) => ProductFormScreen(
+          productId: int.parse(state.pathParameters['id']!),
+        ),
+      ),
+      GoRoute(
+        path: '/invoices/new',
+        builder: (context, state) => const InvoiceFormScreen(),
+      ),
+      GoRoute(
+        path: '/invoices/:id',
+        builder: (context, state) => InvoiceDetailScreen(
+          invoiceId: int.parse(state.pathParameters['id']!),
+        ),
       ),
     ],
   );
