@@ -2,8 +2,6 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:digikhata/data/db/database.dart';
-import 'package:digikhata/data/db/tables/clients.dart';
-import 'package:digikhata/data/db/tables/transactions.dart';
 import 'package:drift/drift.dart';
 
 void main() {
