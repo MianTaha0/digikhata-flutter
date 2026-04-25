@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/app_localizations.dart';
 import 'tabs/bills_tab.dart';
 import 'tabs/cash_tab.dart';
 import 'tabs/expense_tab.dart';
@@ -27,24 +28,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppL10n.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DigiKhata'),
+        title: Text(t.appTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.analytics_outlined),
-            tooltip: 'Reports',
+            tooltip: t.actionReports,
             onPressed: () => context.push('/reports'),
           ),
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
-            tooltip: 'Reminders',
+            tooltip: t.actionReminders,
             onPressed: () => context.push('/reminders'),
           ),
           IconButton(
             icon: const Icon(Icons.backup_outlined),
-            tooltip: 'Backup',
+            tooltip: t.actionBackup,
             onPressed: () => context.push('/backup'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: t.actionSettings,
+            onPressed: () => context.push('/settings'),
           ),
         ],
       ),
@@ -52,27 +59,27 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: const [
+        destinations: [
           NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'Home'),
+              icon: const Icon(Icons.home_outlined),
+              selectedIcon: const Icon(Icons.home),
+              label: t.tabHome),
           NavigationDestination(
-              icon: Icon(Icons.payments_outlined),
-              selectedIcon: Icon(Icons.payments),
-              label: 'Cash'),
+              icon: const Icon(Icons.payments_outlined),
+              selectedIcon: const Icon(Icons.payments),
+              label: t.tabCash),
           NavigationDestination(
-              icon: Icon(Icons.inventory_2_outlined),
-              selectedIcon: Icon(Icons.inventory_2),
-              label: 'Stock'),
+              icon: const Icon(Icons.inventory_2_outlined),
+              selectedIcon: const Icon(Icons.inventory_2),
+              label: t.tabStock),
           NavigationDestination(
-              icon: Icon(Icons.receipt_long_outlined),
-              selectedIcon: Icon(Icons.receipt_long),
-              label: 'Bills'),
+              icon: const Icon(Icons.receipt_long_outlined),
+              selectedIcon: const Icon(Icons.receipt_long),
+              label: t.tabBills),
           NavigationDestination(
-              icon: Icon(Icons.money_off_outlined),
-              selectedIcon: Icon(Icons.money_off),
-              label: 'Expense'),
+              icon: const Icon(Icons.money_off_outlined),
+              selectedIcon: const Icon(Icons.money_off),
+              label: t.tabExpense),
         ],
       ),
     );

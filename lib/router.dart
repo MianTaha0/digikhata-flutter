@@ -12,6 +12,7 @@ import 'features/invoices/invoice_detail_screen.dart';
 import 'features/invoices/invoice_form_screen.dart';
 import 'features/reminders/reminders_screen.dart';
 import 'features/reports/reports_screen.dart';
+import 'features/settings/settings_screen.dart';
 import 'features/stock/product_detail_screen.dart';
 import 'features/stock/product_form_screen.dart';
 
@@ -91,6 +92,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/reminders',
         builder: (context, state) => const RemindersScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
     ],
   );
