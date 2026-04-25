@@ -2,14 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:printing/printing.dart';
 
 import '../../core/format/money.dart';
 import '../../core/theme/colors.dart';
+import '../backup/backup_providers.dart';
 import 'clients_providers.dart';
 
 class ClientDetailScreen extends ConsumerWidget {
   final int clientId;
   const ClientDetailScreen({super.key, required this.clientId});
+
+  Future<void> _printStatement(WidgetRef ref) async {
+    final pdf = await ref.read(pdfServiceProvider).buildClientStatement(clientId);
+    final bytes = await pdf.save();
+    await Printing.sharePdf(
+      bytes: bytes,
+      filename: 'ledger-$clientId.pdf',
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,6 +36,11 @@ class ClientDetailScreen extends ConsumerWidget {
           error: (_, __) => const Text('Customer'),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf_outlined),
+            tooltip: 'Export PDF statement',
+            onPressed: () => _printStatement(ref),
+          ),
           IconButton(
             icon: const Icon(Icons.edit_outlined),
             onPressed: () => context.push('/clients/$clientId/edit'),

@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:printing/printing.dart';
 
 import '../../core/format/money.dart';
 import '../../core/theme/colors.dart';
 import '../../data/db/database_provider.dart';
+import '../backup/backup_providers.dart';
 import 'invoices_providers.dart';
 
 class InvoiceDetailScreen extends ConsumerWidget {
   final int invoiceId;
   const InvoiceDetailScreen({super.key, required this.invoiceId});
+
+  Future<void> _printInvoice(WidgetRef ref) async {
+    final pdf = await ref.read(pdfServiceProvider).buildInvoice(invoiceId);
+    final bytes = await pdf.save();
+    await Printing.sharePdf(bytes: bytes, filename: 'invoice-$invoiceId.pdf');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,7 +25,16 @@ class InvoiceDetailScreen extends ConsumerWidget {
     final dateFmt = DateFormat('d MMM yyyy');
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Invoice')),
+      appBar: AppBar(
+        title: const Text('Invoice'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf_outlined),
+            tooltip: 'Export PDF',
+            onPressed: () => _printInvoice(ref),
+          ),
+        ],
+      ),
       body: dataAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),

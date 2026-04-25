@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'features/backup/backup_screen.dart';
 import 'features/cash/add_cash_screen.dart';
 import 'features/clients/add_tx_screen.dart';
 import 'features/clients/client_detail_screen.dart';
@@ -81,6 +82,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/reports',
         builder: (context, state) => const ReportsScreen(),
+      ),
+      GoRoute(
+        path: '/backup',
+        builder: (context, state) => const BackupScreen(),
       ),
     ],
   );
