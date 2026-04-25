@@ -10,6 +10,7 @@ import 'daos/clients_dao.dart';
 import 'daos/expenses_dao.dart';
 import 'daos/invoices_dao.dart';
 import 'daos/products_dao.dart';
+import 'daos/reminders_dao.dart';
 import 'daos/reports_dao.dart';
 import 'daos/transactions_dao.dart';
 import 'tables/businesses.dart';
@@ -19,6 +20,7 @@ import 'tables/expense_entries.dart';
 import 'tables/invoice_items.dart';
 import 'tables/invoices.dart';
 import 'tables/products.dart';
+import 'tables/reminders.dart';
 import 'tables/stock_movements.dart';
 import 'tables/transactions.dart';
 
@@ -35,6 +37,7 @@ part 'database.g.dart';
     Invoices,
     InvoiceItems,
     StockMovements,
+    Reminders,
   ],
   daos: [
     ClientsDao,
@@ -44,6 +47,7 @@ part 'database.g.dart';
     ProductsDao,
     InvoicesDao,
     ReportsDao,
+    RemindersDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -52,7 +56,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -67,6 +71,9 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(invoices);
             await m.createTable(invoiceItems);
             await m.createTable(stockMovements);
+          }
+          if (from < 4) {
+            await m.createTable(reminders);
           }
         },
       );

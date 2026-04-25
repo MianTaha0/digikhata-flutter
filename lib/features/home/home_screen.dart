@@ -37,6 +37,11 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () => context.push('/reports'),
           ),
           IconButton(
+            icon: const Icon(Icons.notifications_outlined),
+            tooltip: 'Reminders',
+            onPressed: () => context.push('/reminders'),
+          ),
+          IconButton(
             icon: const Icon(Icons.backup_outlined),
             tooltip: 'Backup',
             onPressed: () => context.push('/backup'),

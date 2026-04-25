@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,7 @@ import '../../data/db/daos/invoices_dao.dart';
 import '../../data/db/database.dart';
 import '../../data/db/database_provider.dart';
 import '../clients/clients_providers.dart';
+import '../reminders/notification_service.dart';
 import '../stock/stock_providers.dart';
 
 class _Line {
@@ -42,6 +44,7 @@ class _InvoiceFormScreenState extends ConsumerState<InvoiceFormScreen> {
   int? _customerId;
   final _notes = TextEditingController();
   final _amountPaid = TextEditingController(text: '0');
+  DateTime? _dueDate;
   final List<_Line> _lines = [_Line()];
 
   @override
@@ -104,10 +107,11 @@ class _InvoiceFormScreenState extends ConsumerState<InvoiceFormScreen> {
     }
     final db = ref.read(appDatabaseProvider);
     final bizId = await ref.read(currentBusinessIdProvider.future);
-    await db.invoicesDao.createInvoice(
+    final invoiceId = await db.invoicesDao.createInvoice(
       businessId: bizId,
       customerId: _customerId!,
       issueDate: DateTime.now(),
+      dueDate: _dueDate,
       notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
       amountPaid: double.tryParse(_amountPaid.text.trim()) ?? 0,
       lines: validLines
@@ -119,6 +123,27 @@ class _InvoiceFormScreenState extends ConsumerState<InvoiceFormScreen> {
               ))
           .toList(),
     );
+    // Auto-schedule a reminder at 9am on the due date, if set.
+    if (_dueDate != null) {
+      final when = DateTime(_dueDate!.year, _dueDate!.month, _dueDate!.day, 9);
+      final rid = await db.remindersDao.insertReminder(
+        RemindersCompanion.insert(
+          businessId: bizId,
+          clientId: Value(_customerId),
+          invoiceId: Value(invoiceId),
+          kind: const Value(1),
+          title: 'Invoice due today',
+          body: Value('Amount due today — invoice #$invoiceId'),
+          triggerAt: when,
+        ),
+      );
+      await NotificationService.instance.schedule(
+        id: rid,
+        title: 'Invoice due today',
+        body: 'Amount due today — invoice #$invoiceId',
+        when: when,
+      );
+    }
     if (mounted) context.pop();
   }
 
@@ -288,6 +313,24 @@ class _InvoiceFormScreenState extends ConsumerState<InvoiceFormScreen> {
                         const TextStyle(fontWeight: FontWeight.w700)),
               ],
             ),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            icon: const Icon(Icons.event),
+            label: Text(_dueDate == null
+                ? 'Set due date (optional)'
+                : 'Due ${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}'),
+            onPressed: () async {
+              final d = await showDatePicker(
+                context: context,
+                initialDate: _dueDate ??
+                    DateTime.now().add(const Duration(days: 7)),
+                firstDate: DateTime.now(),
+                lastDate:
+                    DateTime.now().add(const Duration(days: 365 * 2)),
+              );
+              if (d != null) setState(() => _dueDate = d);
+            },
           ),
           const SizedBox(height: 12),
           TextField(
