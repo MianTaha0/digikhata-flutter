@@ -9,6 +9,7 @@ import 'features/expenses/add_expense_screen.dart';
 import 'features/home/home_screen.dart';
 import 'features/invoices/invoice_detail_screen.dart';
 import 'features/invoices/invoice_form_screen.dart';
+import 'features/reports/reports_screen.dart';
 import 'features/stock/product_detail_screen.dart';
 import 'features/stock/product_form_screen.dart';
 
@@ -76,6 +77,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => InvoiceDetailScreen(
           invoiceId: int.parse(state.pathParameters['id']!),
         ),
+      ),
+      GoRoute(
+        path: '/reports',
+        builder: (context, state) => const ReportsScreen(),
       ),
     ],
   );

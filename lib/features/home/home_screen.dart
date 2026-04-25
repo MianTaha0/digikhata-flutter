@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'tabs/bills_tab.dart';
 import 'tabs/cash_tab.dart';
@@ -27,7 +28,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('DigiKhata')),
+      appBar: AppBar(
+        title: const Text('DigiKhata'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.analytics_outlined),
+            tooltip: 'Reports',
+            onPressed: () => context.push('/reports'),
+          ),
+        ],
+      ),
       body: _tabs[_index],
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,

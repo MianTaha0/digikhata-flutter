@@ -10,6 +10,7 @@ import 'daos/clients_dao.dart';
 import 'daos/expenses_dao.dart';
 import 'daos/invoices_dao.dart';
 import 'daos/products_dao.dart';
+import 'daos/reports_dao.dart';
 import 'daos/transactions_dao.dart';
 import 'tables/businesses.dart';
 import 'tables/cash_entries.dart';
@@ -42,6 +43,7 @@ part 'database.g.dart';
     ExpensesDao,
     ProductsDao,
     InvoicesDao,
+    ReportsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
